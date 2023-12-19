@@ -11,8 +11,16 @@
 
 /*
 chat gpt vertex intersection c++ code:
+
+
 #include <iostream>
-#include <SFML/Graphics.hpp>
+
+class Vertex {
+public:
+    double x, y;
+
+    Vertex(double x, double y) : x(x), y(y) {}
+};
 
 class Line {
 private:
@@ -45,25 +53,25 @@ public:
         }
     }
 
-    sf::Vector2f findIntersection(const Line& otherLine) {
+    Vertex findIntersection(const Line& otherLine) {
         if (!std::isnan(slope) && !std::isnan(otherLine.slope)) {
             // General lines - solve for intersection point
             double xIntersection = (otherLine.intercept - intercept) / (slope - otherLine.slope);
             double yIntersection = slope * xIntersection + intercept;
-            return sf::Vector2f(static_cast<float>(xIntersection), static_cast<float>(yIntersection));
+            return Vertex(xIntersection, yIntersection);
         } else if (std::isnan(slope)) {
             // Vertical line and general line
             double xIntersection = intercept;
             double yIntersection = otherLine.slope * xIntersection + otherLine.intercept;
-            return sf::Vector2f(static_cast<float>(xIntersection), static_cast<float>(yIntersection));
+            return Vertex(xIntersection, yIntersection);
         } else if (std::isnan(otherLine.slope)) {
             // General line and vertical line
             double xIntersection = otherLine.intercept;
             double yIntersection = slope * xIntersection + intercept;
-            return sf::Vector2f(static_cast<float>(xIntersection), static_cast<float>(yIntersection));
+            return Vertex(xIntersection, yIntersection);
         } else {
             // Both lines are vertical, no intersection
-            return sf::Vector2f(NAN, NAN);
+            return Vertex(NAN, NAN);
         }
     }
 };
@@ -79,7 +87,7 @@ int main() {
     std::cout << "Equation of the vertical line: ";
     verticalLine.printEquation();
 
-    sf::Vector2f intersection = line.findIntersection(verticalLine);
+    Vertex intersection = line.findIntersection(verticalLine);
 
     if (!std::isnan(intersection.x)) {
         std::cout << "Intersection Point: (" << intersection.x << ", " << intersection.y << ")" << std::endl;
@@ -89,6 +97,7 @@ int main() {
 
     return 0;
 }
+
 */
 sf::Text debug_text_display;
 std::string debug_text;
