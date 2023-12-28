@@ -1,4 +1,4 @@
-TARGET = main.cpp
+TARGET = src/main.cpp
 
 BIN = bin/main
 

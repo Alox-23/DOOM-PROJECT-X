@@ -104,12 +104,13 @@ class Player
 		sf::Texture playerTexture;
 		sf::Sprite playerSprite;
 		sf::Vector2f playerPos;
+		sf::Vector2f playerDir;
 
 	public:
 		Player(sf::Vector2f pos)
 		{
 			playerPos = pos;
-			if (!playerTexture.loadFromFile("img/player.png"))
+			if (!playerTexture.loadFromFile("asset/img/player.png"))
 			{
 			  std::cout << "problem loading player image from file" << std::endl; 
 			}
@@ -119,12 +120,40 @@ class Player
 
 		void update()
 		{
+			this->get_input();
 			playerSprite.setPosition(playerPos);
+			add_debug_text("player dir: ", std::to_string(this->get_dir().x) + ", " + std::to_string(this->get_dir().y), "\n");
+			playerDir.x = 0;
+			playerDir.y = 0;
+		};
+
+		void get_input()
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+			{
+				playerDir.y = 1;	
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+			{
+				playerDir.x = -1;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			{
+				playerDir.y = -1;	
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			{
+				playerDir.x = 1;
+			}
 		};
 
 		sf::Vector2f get_pos()
 		{
 			return playerPos;
+		};
+		sf::Vector2f get_dir()
+		{
+			return playerDir;
 		};
 
 		void draw(sf::RenderWindow *window)
@@ -142,7 +171,7 @@ class Wall
 	public:
 		Wall()
 		{
-			std::cout << "Wall created" << std::endl;
+			(void)0;
 		}
 		Wall(sf::Vector2f p1, sf::Vector2f p2) 
 		{
@@ -187,6 +216,7 @@ class Sector
 
 		sf::Vector2f (* get_vertices())
 		{
+			std::cout << "memory adress of vertices in sector: " << vertices << std::endl; 
 			return vertices;
 		}
 
@@ -252,17 +282,18 @@ int main ()
   	Player p(sf::Vector2f(400, 300)); 
 
 	sf::Font font;
-   	if (!font.loadFromFile("Arial.ttf"))
+   	if (!font.loadFromFile("asset/fonts/Pixelify_Sans/font.ttf"))
 	{
 		std::cout << "please check that there is a font file" << std::endl;
 	}
 	
 	debug_text_display.setFont(font);
-	debug_text_display.setCharacterSize(15);
+	debug_text_display.setCharacterSize(20);
 	debug_text_display.setFillColor(sf::Color::Green);
 
   	// run the program as long as the window is open
 	sf::Vector2f (*sector_vertices) = sector.get_vertices();
+	std::cout << "memory adress of vertices in sector: " << sector_vertices << std::endl; 
   	while (window.isOpen())
  	{
 		deltaTime = clock.restart();
@@ -270,15 +301,16 @@ int main ()
 		//update
 		//text
 		debug_text = "--DEBUG TEXT--\n";
-		add_debug_text("STATS:", "", "\n");
-		add_debug_text("fps: ",std::to_string(std::round(1.f / deltaTime.asSeconds())), "\n");
-		add_debug_text("player pos: ", std::to_string(p.get_pos().x) + ", " + std::to_string(p.get_pos().y), "\n");
-		add_debug_text("video mode: ", std::to_string(window.getSize().x) + ", " + std::to_string(window.getSize().y), "\n");
 		add_debug_text("SECTOR VERTICES: ", "", "\n");	
 		for (int i = 1; i < 8; i++)
 		{
 			add_debug_text("vector" + std::to_string(i) + ": ", std::to_string(sector_vertices[i].x) + ", " + std::to_string(sector_vertices[i].y), "\n");
 		}
+		add_debug_text("STATS:", "", "\n");
+		add_debug_text("fps: ",std::to_string(std::round(1.f / deltaTime.asSeconds())), "\n");
+		add_debug_text("video mode: ", std::to_string(window.getSize().x) + ", " + std::to_string(window.getSize().y), "\n");
+		add_debug_text("player pos: ", std::to_string(p.get_pos().x) + ", " + std::to_string(p.get_pos().y), "\n");
+	
 	  	
 		//player
 		p.update();  
@@ -314,6 +346,5 @@ int main ()
 		  
 		window.display();
 	}
-	delete[] sector_vertices;
 }
 

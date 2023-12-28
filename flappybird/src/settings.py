@@ -1,3 +1,0 @@
-WIDTH, HEIGHT = 350, 600
-FPS = 60
-
