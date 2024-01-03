@@ -1,4 +1,4 @@
-TARGET = src/main.cpp
+TARGET = src/main.cpp src/player.cpp src/wall.cpp src/sector.cpp
 
 BIN = bin/main
 

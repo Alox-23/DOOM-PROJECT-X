@@ -8,9 +8,7 @@
 #include <fstream>
 #include <ostream>
 #include <cmath>
-
 #include "player.h"
-#include "sector.h"
 /*
 chat gpt vertex intersection c++ code:
 #include <iostream>
@@ -99,6 +97,99 @@ void add_debug_text(std::string in_text1, std::string in_text2, std::string end_
 {
 	debug_text += in_text1 + in_text2 + end_val;
 };
+class Wall
+{
+	private:
+		[[maybe_unused]]double x1, y1, x2, y2;
+		[[maybe_unused]]sf::Vector2f p1, p2;
+		sf::VertexArray line;
+	public:
+		Wall()
+		{
+			(void)0;
+		}
+		Wall(sf::Vector2f p1, sf::Vector2f p2) 
+		{
+		  this->p1.x = p1.x;
+		  this->p2.x = p2.x;
+		  this->p1.y = p1.y;
+		  this->p2.y = p2.y;  
+		  line = sf::VertexArray(sf::Lines, 2);
+		  line[0].position = this->p1;
+		  line[1].position = this->p2;
+		}
+
+		void draw(sf::RenderWindow *window)
+		{
+		  window->draw(line);
+		}
+};
+
+
+class Sector
+{
+	private:
+		sf::Vector2f (*vertices);
+		int vertices_length;
+		Wall (* walls);
+
+	public:
+		Sector(int num_vertices, int sector_dat[][2]) : vertices(new sf::Vector2f[num_vertices]), vertices_length(num_vertices), walls(new Wall[num_vertices])
+		{
+			set_vertices(num_vertices, sector_dat);
+			set_walls();
+		}
+
+		void set_vertices(int num_vertices, int sector_dat[][2])
+		{
+			walls = new Wall[num_vertices];
+			for(int i = 0; i < num_vertices; i++) {
+				vertices[i].x = sector_dat[i][0];
+				vertices[i].y = sector_dat[i][1];
+			}
+		}
+
+		sf::Vector2f (* get_vertices())
+		{
+			std::cout << "memory adress of vertices in sector: " << vertices << std::endl; 
+			return vertices;
+		}
+
+		void set_walls()
+		{
+			for (int i = 0; i < vertices_length; i++)
+			{
+				if (i == vertices_length - 1)
+				{
+					walls[i] = Wall(vertices[i], vertices[0]);   
+				}
+				else
+				{
+					walls[i] = Wall(vertices[i], vertices[i + 1]);
+				}
+			}
+		}
+		
+		void draw_walls(sf::RenderWindow *window)
+		{
+		  for (int i = 0; i < vertices_length; i++)
+		  {
+			walls[i].draw(window);
+		  }
+		}
+
+		Wall (* get_walls())
+		{
+			return walls;
+		}
+
+		~Sector()
+		{
+			delete[] vertices;
+			delete[] walls;
+		}
+};
+
 int main ()
 {
 	sf::VideoMode full_screen = sf::VideoMode(1920, 1080);
@@ -154,8 +245,8 @@ int main ()
 		add_debug_text("fps: ",std::to_string(std::round(1.f / deltaTime.asSeconds())), "\n");
 		add_debug_text("video mode: ", std::to_string(window.getSize().x) + ", " + std::to_string(window.getSize().y), "\n");
 		add_debug_text("player pos: ", std::to_string(p.get_pos().x) + ", " + std::to_string(p.get_pos().y), "\n");
-		add_debug_text("player angle: ", std::to_string(p.get_angle()) + "deg", "\n");	  	
-
+		add_debug_text("player dir: ", std::to_string(p.get_dir().x) + ", " + std::to_string(p.get_dir().y), "\n");
+	  	
 		//player
 		p.update();  
 
