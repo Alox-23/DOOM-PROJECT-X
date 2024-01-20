@@ -102,9 +102,9 @@ void add_debug_text(std::string in_text1, std::string in_text2, std::string end_
 int main ()
 {
 	sf::VideoMode full_screen = sf::VideoMode(1920, 1080);
-	sf::RenderWindow window(full_screen, "Math lol", sf::Style::Fullscreen);
-	window.setVerticalSyncEnabled(true);
-	//window.setFramerateLimit(2000);
+	sf::RenderWindow window(full_screen, "Math lol");
+	//window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(30);
 
 	sf::Time deltaTime;
 	sf::Clock clock;

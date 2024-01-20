@@ -4,14 +4,15 @@
 Player::Player(sf::Vector2f pos)
 {
 	this->playerPos = pos;
-	if (!this->playerTexture.loadFromFile("asset/img/player.png"))
-	{
-	  std::cout << "problem loading player image from file" << std::endl; 
-	}
-	this->playerSprite.setTexture(playerTexture);
-	this->playerSprite.setPosition(playerPos);
 
-	this->playerSpeed = 2;
+    if (!this->playerTexture.loadFromFile("asset/img/player.png"))
+        {
+          std::cout << "problem loading player image from file" << std::endl; 
+        }
+    this->playerShape.setTexture(playerTexture);
+    this->playerShape.setPosition(playerPos);
+    
+	this->playerSpeed = 0.2;
 	this->playerAngle = 90;
 	this->playerRotSpeed = 5;
 };
@@ -23,38 +24,27 @@ void Player::update()
 
 void Player::movement()
 {
-	double sin_a = std::sin(this->playerAngle);
-	double cos_a = std::cos(this->playerAngle);
-	double dx = 0;
-	double dy = 0;
-	double speed_sin = this->playerSpeed * sin_a;
-	double speed_cos = this->playerSpeed * cos_a;
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
-		dx += speed_cos;
-		dy += speed_sin;
-	}	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		dx += -speed_cos;
-		dy += -speed_sin;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		dx += -speed_sin;
-		dy += speed_cos;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		dx += speed_sin;
-		dy += -speed_cos;
-	}
-	
-	this->playerPos.x += dx;
-	this->playerPos.y += dy;
-	this->playerSprite.setPosition(this->playerPos);
-	this->playerSprite.setRotation(this->playerAngle);
+    {
+        this->playerDir.x = std::cos(this->playerAngle * M_PI/180) * 180/M_PI;
+        this->playerDir.y = std::sin(this->playerAngle * M_PI/180) * 180/M_PI;
+    }  
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    {
+        this->playerDir.x = -std::cos(this->playerAngle * M_PI/180) * 180/M_PI;
+        this->playerDir.y = -std::sin(this->playerAngle * M_PI/180) * 180/M_PI;
+    } 
+    else 
+    {
+        this->playerDir.x = 0;
+        this->playerDir.y = 0; 
+    }
+
+    this->playerPos.x += this->playerDir.x * this->playerSpeed;
+    this->playerPos.y += this->playerDir.y * this->playerSpeed;
+
+	this->playerShape.setPosition(this->playerPos);
+    this->playerShape.setRotation(this->playerAngle);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
@@ -64,7 +54,17 @@ void Player::movement()
 	{
 		this->playerAngle += this->playerRotSpeed;
 	}
-	playerAngle %= M_PI*2;
+
+    /*
+    if (this->playerAngle > 360)
+    {
+        this->playerAngle = this->playerAngle - 360;
+    }
+    if (this->playerAngle < 0)
+    {
+        this->playerAngle = 360 - this->playerAngle;
+    }
+    */
 };
 
 sf::Vector2f Player::get_pos()
@@ -79,5 +79,5 @@ double Player::get_angle()
 
 void Player::draw(sf::RenderWindow *window)
 {
-	window->draw(this->playerSprite);
+	window->draw(this->playerShape);
 };

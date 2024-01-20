@@ -8,11 +8,12 @@ class Player
 {
 	private:
 		sf::Texture playerTexture;
-		sf::Sprite playerSprite;
+		sf::Sprite playerShape;
 		sf::Vector2f playerPos;
 		double playerRotSpeed;
-		double playerSpeed;
+		float playerSpeed;
 		double playerAngle;
+        sf::Vector2f playerDir;
 
 	public:
 		Player(sf::Vector2f pos);
