@@ -1,13 +1,4 @@
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <iostream>
-#include <fstream>
-#include <ostream>
-#include <cmath>
 
 #include "player.h"
 #include "sector.h"
@@ -92,6 +83,7 @@ int main() {
     return 0;
 }
 */
+
 sf::Text debug_text_display;
 std::string debug_text;
 
@@ -191,4 +183,3 @@ int main ()
 		window.display();
 	}
 }
-
