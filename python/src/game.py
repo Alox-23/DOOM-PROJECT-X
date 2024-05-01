@@ -1,18 +1,21 @@
 import pygame
 import player
 import sector
+import raycaster
+import obj_renderer
 
 class Game:
     def __init__(self):
         self.delta_time = 0
 
-        self.screen = pygame.display.set_mode((1200, 700))
+        self.renderer = obj_renderer.Obj_renderer(self)
+        self.raycaster = raycaster.Raycaster(self)
         self.clock = pygame.time.Clock()
-        pygame.font.init()
+
         self.font = pygame.font.SysFont("Comic Sans MS", 30)
         self.debug_text = ""
-        self.debug_text_surf = self.font.render(self.debug_text, False, (0,0,0))
 
+        
         self.sector = sector.Sector(
             [
                 [pygame.math.Vector2(50, 350), pygame.math.Vector2(350, 50)],
@@ -23,16 +26,46 @@ class Game:
                 [pygame.math.Vector2(350, 650), pygame.math.Vector2(50, 350)]
             ]
         )
+        """
+        self.sector = sector.Sector(
+            [
+                [pygame.math.Vector2(50, 350), pygame.math.Vector2(350, 50)]
+            ]
+        )
+        """
         self.player = player.Player(self)
+
+    def blit_text(self, surface, text, pos, color=pygame.Color("green")):
+        words = [word.split(' ') for word in text.splitlines()]
+        space = self.font.size(' ')[0]
+        max_width, max_height = surface.get_size()
+        x, y = pos
+
+        for line in words:
+            for word in line:
+                word_surface = self.font.render(word, 0, color)
+                word_width, word_height = word_surface.get_size()
+
+                if x + word_width >= max_width:
+                    x = pos[0]
+                    y += word_height
+
+                surface.blit(word_surface, (x, y))
+
+                x += word_width + space
+
+            x = pos[0]
+            y += word_height
 
     def mainloop(self):
         running = True
         while running:
             running = self.handle_quit()
 
-            self.update()
-
             self.draw()
+
+            self.update()
+            pygame.display.update()
 
         pygame.quit()
         quit()
@@ -41,22 +74,25 @@ class Game:
         self.player.update()
 
         self.debug_text = ""
-        self.debug_text += "player angle: " + str(self.player.angle) + "-----"
-        self.debug_text += "player pos: " + str(self.player.rect.centerx) + ", " + str(self.player.rect.centery) + "-----"
-        self.debug_text_surf = self.font.render(self.debug_text, False, (0,255,0))
+        self.debug_text += "player angle: " + str(self.player.angle) + "\n"
+        self.debug_text += "player pos: " + str(self.player.rect.centerx) + ", " + str(self.player.rect.centery) + "\n"
+        self.debug_text += "fps: " + str(int(self.clock.get_fps())) + "\n"
+
+        self.raycaster.update(self.sector)
 
         self.delta_time = self.clock.tick(60)
 
     def draw(self):
-        self.screen.fill((26, 26, 26))
+        self.renderer.screen.fill((26, 26, 26))
 
-        self.sector.draw_walls(self.screen)
-
+        self.sector.draw_walls(self.renderer.screen)
         self.player.draw()
 
-        self.screen.blit(self.debug_text_surf, (0,0))
+        self.renderer.draw()
+
+        self.blit_text(self.renderer.screen, self.debug_text, (10, 10))
         
-        pygame.display.update()
+        
 
     def handle_quit(self):
         for event in pygame.event.get():

@@ -3,18 +3,18 @@ import math
 
 class Player:
     PLAYER_SPEED = 0.5
-    PLAYER_ROT_SPEED = 5
+    PLAYER_ROT_SPEED = 0.5
     def __init__(self, game):
         self.game = game
 
         self.angle = 0
         
-        self.image = pygame.image.load("assets/arrow2.png")
+        self.image = pygame.image.load("assets/arrow2.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (350, 250)
 
     def draw(self):
-        self.game.screen.blit(pygame.transform.rotate(self.image, self.angle-90), self.rect)
+        self.game.renderer.screen.blit(pygame.transform.rotate(self.image, self.angle-90), self.rect)
 
     def update(self):
         sin_a = math.sin(math.radians(-self.angle))
@@ -41,16 +41,16 @@ class Player:
             dy += speed_cos
 
         if keys[pygame.K_LEFT]:
-            self.angle += self.PLAYER_ROT_SPEED
+            self.angle += self.PLAYER_ROT_SPEED * self.game.delta_time
         if keys[pygame.K_RIGHT]:
-            self.angle -= self.PLAYER_ROT_SPEED
+            self.angle -= self.PLAYER_ROT_SPEED * self.game.delta_time
 
         self.rect.centerx += dx
         self.rect.centery += dy
 
         
         if self.angle > 360:
-            self.angle = self.angle - 360;
+            self.angle = self.angle - 360
 
         if self.angle < 0:
-            self.angle = 360 - self.angle;
+            self.angle = 360 - self.angle

@@ -10,6 +10,4 @@ class Sector:
         
     def draw_walls(self, screen):
         for i, wall in enumerate(self.walls):
-            print(f"{i}: ", end = "")
-            wall.printEquation()
             wall.draw(screen)
