@@ -15,7 +15,7 @@ class Game:
         self.font = pygame.font.SysFont("Comic Sans MS", 30)
         self.debug_text = ""
 
-        
+        """
         self.sector = sector.Sector(
             [
                 [pygame.math.Vector2(50, 350), pygame.math.Vector2(350, 50)],
@@ -32,7 +32,6 @@ class Game:
                 [pygame.math.Vector2(50, 350), pygame.math.Vector2(350, 50)]
             ]
         )
-        """
         self.player = player.Player(self)
 
     def blit_text(self, surface, text, pos, color=pygame.Color("green")):
@@ -65,6 +64,8 @@ class Game:
             self.draw()
 
             self.update()
+
+            self.player.draw()
             pygame.display.update()
 
         pygame.quit()
@@ -86,13 +87,10 @@ class Game:
         self.renderer.screen.fill((26, 26, 26))
 
         self.sector.draw_walls(self.renderer.screen)
-        self.player.draw()
 
         self.renderer.draw()
 
         self.blit_text(self.renderer.screen, self.debug_text, (10, 10))
-        
-        
 
     def handle_quit(self):
         for event in pygame.event.get():

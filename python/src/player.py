@@ -3,11 +3,11 @@ import math
 
 class Player:
     PLAYER_SPEED = 0.5
-    PLAYER_ROT_SPEED = 0.5
+    PLAYER_ROT_SPEED = 0.2
     def __init__(self, game):
         self.game = game
 
-        self.angle = 0
+        self.angle = 135
         
         self.image = pygame.image.load("assets/arrow2.png").convert_alpha()
         self.rect = self.image.get_rect()
