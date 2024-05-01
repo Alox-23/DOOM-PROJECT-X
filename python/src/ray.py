@@ -42,9 +42,9 @@ class Ray:
             wall_collision.y = self.slope * wall_collision.x + self.intercept
  
         #check if the wall_colision is insode of the wall or not
-        #if wall_collision.y > wall.pos[1].y and wall_collision.y < wall.pos[0].y and wall_collision.x > wall.pos[0].x and wall_collision.x < wall.pos[1].x:
-        self.wall_collision.x = wall_collision.x
-        self.wall_collision.y = wall_collision.y
+        if wall_collision.y > wall.pos[1].y and wall_collision.y < wall.pos[0].y and wall_collision.x > wall.pos[0].x and wall_collision.x < wall.pos[1].x:
+            self.wall_collision.x = wall_collision.x
+            self.wall_collision.y = wall_collision.y
             
         return self.wall_collision
     
@@ -66,6 +66,10 @@ class Ray:
         else:
             print("x =", self.intercept)
 
-    def draw_2d(self, game, deg, d):
-        pygame.draw.line(game.renderer.screen, (255, 255, 255),game.player.rect.center, (game.player.rect.centerx + d * math.cos(math.radians(-deg)), game.player.rect.centery + d * math.sin(math.radians(-deg))), 1)
+    def draw_2d1(self, game, deg, d):
+        #pygame.draw.line(game.renderer.screen, (255, 255, 255),game.player.rect.center, (game.player.rect.centerx + d * math.cos(math.radians(-deg)), game.player.rect.centery + d * math.sin(math.radians(-deg))), 1)
+        pygame.draw.line(game.renderer.screen, (255, 255, 255),game.player.rect.center, (self.get_collision().x, self.get_collision().y), 1)
+    
+    def draw_2d2(self, game, deg, d):
+        pygame.draw.line(game.renderer.screen, (0, 255, 0),game.player.rect.center, (game.player.rect.centerx + d * math.cos(math.radians(-deg)), game.player.rect.centery + d * math.sin(math.radians(-deg))), 1)
         #pygame.draw.line(game.renderer.screen, (255, 255, 255),game.player.rect.center, (self.get_collision().x, self.get_collision().y), 1)

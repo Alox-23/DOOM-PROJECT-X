@@ -51,7 +51,25 @@ class Raycaster:
 
             pygame.draw.circle(self.game.renderer.screen, (255, 0, 0), ray.get_collision(), 3)
 
-            ray.draw_2d(self.game, deg, 200)
+            ray.draw_2d2(self.game, deg, 1000)
+            ray.draw_2d1(self.game, deg, 1)
+
+            if ray.get_collision().x != 0 and ray.get_collision().y != 0:
+                distance = math.sqrt(
+                    ((self.game.player.rect.centerx - ray.get_collision().x)**2) + 
+                    ((self.game.player.rect.centery - ray.get_collision().y)**2)
+                )
+                distance *= math.cos(math.radians(self.game.player.angle - deg))
+
+                proj_height = self.game.renderer.HEIGHT / (distance / 2) + 0.00001
+
+                self.ray_casting_result.append(
+                    (distance, proj_height)
+                )
+            else:
+                self.ray_casting_result.append(
+                    (None, None)
+                )
 
             deg += increment
             ray.reset_wall_collision_for_next_check()
